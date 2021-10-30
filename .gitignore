@@ -6,3 +6,5 @@
 /e2e-test/cypress/videos
 
 /.idea
+
+__pycache__
