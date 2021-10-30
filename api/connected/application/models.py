@@ -10,11 +10,11 @@ class ConnectedDevelopersResponse(BaseModel):
 
     class Config:
         schema_extra = {
-            "example": {
-                "connected": True,
-                "organisations": [
-                    "org1",
-                    "org2"
+            'example': {
+                'connected': True,
+                'organisations': [
+                    'org1',
+                    'org2'
                 ]
             }
         }
@@ -25,8 +25,8 @@ class NotConnectedDevelopersResponse(BaseModel):
 
     class Config:
         schema_extra = {
-            "example": {
-                "connected": False
+            'example': {
+                'connected': False
             }
         }
 
@@ -36,11 +36,11 @@ class NotExistingDeveloperResponse(BaseModel):
 
     class Config:
         schema_extra = {
-            "example": {
-                "errors": [
-                    "dev1 is not a valid user in github",
-                    "dev1 is not a valid user in twitter",
-                    "dev2 is not a valid user in twitter"
+            'example': {
+                'errors': [
+                    'dev1 is not a valid user in github',
+                    'dev1 is not a valid user in twitter',
+                    'dev2 is not a valid user in twitter'
                 ]
             }
         }
@@ -53,12 +53,12 @@ class TimedConnectedDevelopersResponse(BaseModel):
 
     class Config:
         schema_extra = {
-            "example": {
-                "registered_at": "2021-10-30T13:54:45.485Z",
-                "connected": True,
-                "organisations": [
-                    "org1",
-                    "org2"
+            'example': {
+                'registered_at': '2021-10-30T13:54:45.485Z',
+                'connected': True,
+                'organisations': [
+                    'org1',
+                    'org2'
                 ]
             }
         }
@@ -70,8 +70,8 @@ class TimedNotConnectedDevelopersResponse(BaseModel):
 
     class Config:
         schema_extra = {
-            "example": {
-                "registered_at": "2021-10-30T13:54:45.485Z",
-                "connected": False
+            'example': {
+                'registered_at': '2021-10-30T13:54:45.485Z',
+                'connected': False
             }
         }

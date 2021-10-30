@@ -1,8 +1,13 @@
 from typing import List, Union
 
 from fastapi import APIRouter, Path
+from fastapi.responses import Response
 
-from api.models.connected import (
+from api.connected.application.controllers import (
+    CheckConnectionController,
+    GetPreviousChecksController
+)
+from api.connected.application.models import (
     ConnectedDevelopersResponse,
     NotConnectedDevelopersResponse,
     NotExistingDeveloperResponse,
@@ -11,40 +16,34 @@ from api.models.connected import (
 )
 
 router = APIRouter(
-    prefix="/connected",
-    tags=["connected"],
+    prefix='/connected',
+    tags=['connected'],
 )
 
 
 @router.get(
     '/realtime/{dev1}/{dev2}',
-    summary='Check if two developers are connected and what GitHub organizations they have in common.',
+    summary='Check if two developers are connected and what GitHub organisations they have in common.',
     responses={
         200: {
             'description': 'Case they are connected',
-            "model": ConnectedDevelopersResponse
+            'model': ConnectedDevelopersResponse
         },
         400: {
             'description': 'Case any of them does not exists',
-            "model": NotExistingDeveloperResponse
+            'model': NotExistingDeveloperResponse
         },
         404: {
             'description': 'Case they are not connected',
-            "model": NotConnectedDevelopersResponse
+            'model': NotConnectedDevelopersResponse
         }
     }
 )
 async def check_connection(
     dev1: str = Path(..., description='Account of the first developer'),
     dev2: str = Path(..., description='Account of the second developer')
-):
-    return {
-        'connected': True,
-        'organisations': [
-            'org1',
-            'org2'
-        ]
-    }
+) -> Response:
+    return await CheckConnectionController().handle(dev1, dev2)
 
 
 @router.get(
@@ -52,30 +51,17 @@ async def check_connection(
     summary='This endpoint will return all the related information from previous requests to the real-time endpoint.',
     responses={
         200: {
-            'description': 'Case they have been registered through the realtime enpdoint',
-            "model": List[Union[TimedConnectedDevelopersResponse, TimedNotConnectedDevelopersResponse]]
+            'description': 'Case they have been registered through the realtime endpoint',
+            'model': List[Union[TimedConnectedDevelopersResponse, TimedNotConnectedDevelopersResponse]]
         },
         404: {
-            'description': 'Case they are not connected',
-            "model": None
+            'description': 'Case they are not registered',
+            'model': None
         }
     }
 )
 async def get_previous_checks(
     dev1: str = Path(..., description='Account of the first developer'),
     dev2: str = Path(..., description='Account of the second developer')
-):
-    return [
-        {
-            'registered_at': '2021-10-30T12:50:02.251Z',
-            'connected': True,
-            'organisations': [
-                'org1',
-                'org2'
-            ]
-        },
-        {
-            'registered_at': '2021-10-30T12:50:02.251Z',
-            'connected': False
-        }
-    ]
+) -> Response:
+    return await GetPreviousChecksController().handle(dev1, dev2)
