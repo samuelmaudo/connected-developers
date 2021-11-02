@@ -3,11 +3,11 @@ from typing import List, Union
 from fastapi import APIRouter, Path
 from fastapi.responses import Response
 
-from apps.api.connected.controllers import (
+from apps.api.rest.connected.controllers import (
     CheckConnectionController,
     GetPreviousChecksController
 )
-from apps.api.connected.models import (
+from apps.api.rest.connected.models import (
     ConnectedDevelopersResponse,
     NotConnectedDevelopersResponse,
     NotExistingDeveloperResponse,

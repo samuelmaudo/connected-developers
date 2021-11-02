@@ -1,5 +1,7 @@
 fastapi~=0.70.0
 httpx~=0.20.0
+orjson~=3.6.4
 pydantic~=1.8.2
 python-dotenv~=0.19.1
+tortoise-orm[asyncpg]~=0.17.8
 uvicorn[standard]~=0.15.0

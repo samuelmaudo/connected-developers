@@ -1,4 +1,4 @@
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import Response, ORJSONResponse
 
 from modules.api.connected.domain.entities import ConnectionChecks
 from modules.api.connected.domain.exceptions import UsersNotFound
@@ -13,7 +13,7 @@ __all__ = (
 )
 
 
-class ConnectedDevelopersResponse(JSONResponse):
+class ConnectedDevelopersResponse(ORJSONResponse):
 
     def __init__(self, organisations: CheckOrganisations) -> None:
         super().__init__(
@@ -28,7 +28,7 @@ class ConnectedDevelopersResponse(JSONResponse):
             })
 
 
-class NotConnectedDevelopersResponse(JSONResponse):
+class NotConnectedDevelopersResponse(ORJSONResponse):
 
     def __init__(self) -> None:
         super().__init__(
@@ -38,7 +38,7 @@ class NotConnectedDevelopersResponse(JSONResponse):
             })
 
 
-class NotExistingDeveloperResponse(JSONResponse):
+class NotExistingDeveloperResponse(ORJSONResponse):
 
     def __init__(self, err: UsersNotFound) -> None:
         super().__init__(
@@ -55,7 +55,7 @@ class NotExistingDeveloperResponse(JSONResponse):
             })
 
 
-class RegisteredDevelopersResponse(JSONResponse):
+class RegisteredDevelopersResponse(ORJSONResponse):
 
     def __init__(self, checks: ConnectionChecks) -> None:
         data = []

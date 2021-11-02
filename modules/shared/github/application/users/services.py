@@ -37,6 +37,4 @@ class ConnectionChecker:
             self.repository.search_organizations(user_2)
         )
 
-        print(repr(organisations[0]))
-        print(repr(organisations[1]))
         return Organizations(set(organisations[0]) & set(organisations[1]))

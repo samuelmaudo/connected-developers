@@ -1,3 +1,4 @@
+import os
 from typing import Dict, Optional
 
 from httpx import AsyncClient, Response
@@ -5,7 +6,6 @@ from httpx import AsyncClient, Response
 from modules.shared.twitter.domain.users.entities import *
 from modules.shared.twitter.domain.users.repositories import *
 from modules.shared.twitter.domain.users.values import *
-from modules.shared.twitter.infrastructure.shared import settings
 
 __all__ = ('ApiUserRepository',)
 
@@ -13,7 +13,7 @@ __all__ = ('ApiUserRepository',)
 class ApiUserRepository(UserRepository):
 
     def __init__(self) -> None:
-        self.bearer_token = settings.TWITTER_BEARER_TOKEN
+        self.bearer_token = os.getenv('TWITTER_BEARER_TOKEN')
 
     async def find_by_login(self, login: UserLogin) -> Optional[User]:
         async with self._get_api_client() as client:

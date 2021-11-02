@@ -78,7 +78,7 @@ class ConnectionChecker:
 class ConnectionCheckStorer:
 
     def __init__(self) -> None:
-        self.repository = MySqlConnectionCheckRepository()
+        self.repository = TortoiseConnectionCheckRepository()
 
     async def store(
         self,
@@ -105,7 +105,7 @@ class ConnectionCheckStorer:
 class ConnectionChecksSearcher:
 
     def __init__(self) -> None:
-        self.repository = MySqlConnectionCheckRepository()
+        self.repository = TortoiseConnectionCheckRepository()
 
     async def search(self, user_1: CheckUser, user_2: CheckUser) -> ConnectionChecks:
         if user_1 == user_2:

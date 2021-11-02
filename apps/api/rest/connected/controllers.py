@@ -1,6 +1,6 @@
 from fastapi.responses import Response
 
-from apps.api.connected.responses import (
+from apps.api.rest.connected.responses import (
     ConnectedDevelopersResponse,
     NotConnectedDevelopersResponse,
     NotExistingDeveloperResponse,

@@ -1,3 +1,4 @@
+import os
 from typing import Dict, Optional
 
 from httpx import AsyncClient, Response
@@ -5,7 +6,6 @@ from httpx import AsyncClient, Response
 from modules.shared.github.domain.users.entities import *
 from modules.shared.github.domain.users.repositories import *
 from modules.shared.github.domain.users.values import *
-from modules.shared.github.infrastructure.shared import settings
 
 __all__ = ('ApiUserRepository',)
 
@@ -13,8 +13,8 @@ __all__ = ('ApiUserRepository',)
 class ApiUserRepository(UserRepository):
 
     def __init__(self) -> None:
-        self.login = settings.GITHUB_USERNAME
-        self.personal_access_token = settings.GITHUB_PERSONAL_ACCESS_TOKEN
+        self.login = os.getenv('GITHUB_USERNAME')
+        self.personal_access_token = os.getenv('GITHUB_PERSONAL_ACCESS_TOKEN')
 
     async def find_by_login(self, login: UserLogin) -> Optional[User]:
         async with self._get_api_client() as client:
