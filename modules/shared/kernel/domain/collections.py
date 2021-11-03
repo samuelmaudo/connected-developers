@@ -14,9 +14,9 @@ class Collection(Generic[T], ABC):
 
     def __init__(self, items: Iterable[T] = ()):
         object.__setattr__(self, 'items', tuple(items))
-        self.__post_init__()  # TODO: check if to call this method is necessary
+        # TODO: check if to call `self.__post_init__()` is necessary
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{self.__class__.__name__}{self.items!r}'
 
     def __len__(self) -> int:

@@ -1,6 +1,6 @@
 import asyncio
 from datetime import datetime, timezone
-from typing import List, Optional, Union
+from typing import Awaitable, List, Union
 
 from modules.api.connected.domain.entities import *
 from modules.api.connected.domain.exceptions import *
@@ -33,8 +33,8 @@ class ConnectionChecker:
         self.github_connection_checker = GitHubConnectionChecker()
         self.connection_checks_storer = ConnectionCheckStorer()
 
-    async def check(self, user_1: CheckUser, user_2: CheckUser):
-        tasks = [
+    async def check(self, user_1: CheckUser, user_2: CheckUser) -> ConnectionCheck:
+        tasks: List[Awaitable[Union[TwitterUser, GitHubUser]]] = [
             self.twitter_user_finder.find(TwitterUserLogin(user_1.value)),
             self.twitter_user_finder.find(TwitterUserLogin(user_2.value)),
             self.github_user_finder.find(GitHubUserLogin(user_1.value)),
@@ -84,9 +84,9 @@ class ConnectionCheckStorer:
         self,
         user_1: CheckUser,
         user_2: CheckUser,
-        organisations: Optional[CheckOrganisations] = None,
-        id: Optional[CheckId] = None,
-        registered_at: Optional[CheckRegistrationDateTime] = None
+        organisations: CheckOrganisations = None,
+        id: CheckId = None,
+        registered_at: CheckRegistrationDateTime = None
     ) -> ConnectionCheck:
         if id is None:
             id = CheckId.random()

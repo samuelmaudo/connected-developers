@@ -1,4 +1,5 @@
-from tortoise import Model as Table, fields
+from tortoise import fields
+from tortoise.models import Model as Table
 
 from modules.api.connected.domain.entities import ConnectionCheck, ConnectionChecks
 from modules.api.connected.domain.repositories import ConnectionCheckRepository

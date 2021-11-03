@@ -8,7 +8,7 @@ T = TypeVar('T')
 
 class DomainError(Exception, ABC):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(self.error_message())
 
     @abstractmethod
@@ -38,5 +38,5 @@ class AggregatedError(Generic[T], DomainError, ABC):
         super().__init__()
 
     @property
-    def errors(self) -> Tuple[T]:
+    def errors(self) -> Tuple[T, ...]:
         return self._errors

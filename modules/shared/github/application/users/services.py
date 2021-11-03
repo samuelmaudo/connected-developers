@@ -32,7 +32,7 @@ class ConnectionChecker:
             return Organizations()
 
         # noinspection PyTypeChecker
-        organisations: Tuple[Organizations] = await asyncio.gather(
+        organisations: Tuple[Organizations, Organizations] = await asyncio.gather(
             self.repository.search_organizations(user_1),
             self.repository.search_organizations(user_2)
         )

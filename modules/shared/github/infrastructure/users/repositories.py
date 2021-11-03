@@ -1,5 +1,5 @@
 import os
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from httpx import AsyncClient, Response
 
@@ -13,8 +13,8 @@ __all__ = ('ApiUserRepository',)
 class ApiUserRepository(UserRepository):
 
     def __init__(self) -> None:
-        self.login = os.getenv('GITHUB_USERNAME')
-        self.personal_access_token = os.getenv('GITHUB_PERSONAL_ACCESS_TOKEN')
+        self.login: str = os.getenv('GITHUB_USERNAME')
+        self.personal_access_token: str = os.getenv('GITHUB_PERSONAL_ACCESS_TOKEN')
 
     async def find_by_login(self, login: UserLogin) -> Optional[User]:
         async with self._get_api_client() as client:
@@ -39,8 +39,8 @@ class ApiUserRepository(UserRepository):
             base_url='https://api.github.com',
             auth=(self.login, self.personal_access_token))
 
-    def _make_organization(self, data: Dict) -> Organization:
+    def _make_organization(self, data: Dict[str, Any]) -> Organization:
         return Organization.from_primitives(data['id'], data['login'])
 
-    def _make_user(self, data: Dict) -> User:
+    def _make_user(self, data: Dict[str, Any]) -> User:
         return User.from_primitives(data['id'], data['login'])

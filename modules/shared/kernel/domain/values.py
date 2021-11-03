@@ -12,7 +12,7 @@ __all__ = ('Value', 'Bool', 'DateTime', 'Int', 'Str', 'Uuid')
 class Value:
     value: Any
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{self.__class__.__name__}({self.value!r})'
 
 
@@ -54,20 +54,12 @@ class Str(Value):
 
 
 @dataclass(repr=False, frozen=True)
-class Uuid(Value):
-    value: UUID = Field(default_factory=uuid4)
-
-    def __str__(self) -> str:
-        return str(getattr(self, 'value'))
-
-
-@dataclass(repr=False, frozen=True)
 class Uuid(Str):
 
     @staticmethod
-    def check_uuid(v: str) -> bool:
+    def check_uuid(hex: str) -> bool:
         try:
-            UUID(v)
+            UUID(hex)
         except ValueError:
             return False
         else:
@@ -78,6 +70,6 @@ class Uuid(Str):
         return cls(str(uuid4()))
 
     @validator('value')
-    def validate_uuid(cls, v: str) -> str:
-        assert cls.check_uuid(v), f'{v} is not a UUID'
-        return v
+    def validate_uuid(cls, hex: str) -> str:
+        assert cls.check_uuid(hex), f'{hex} is not a UUID'
+        return hex
