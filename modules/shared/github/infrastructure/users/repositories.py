@@ -27,12 +27,22 @@ class ApiUserRepository(UserRepository):
 
     async def search_organizations_by_login(self, login: UserLogin) -> Organizations:
         async with self._get_api_client() as client:
-            response: Response = await client.get(f'/users/{login}/orgs')
+            orgs = []
+            url = f'/users/{login}/orgs?per_page=100&page=1'
+            while True:
 
-        if response.status_code != 200:
-            return Organizations()
+                response: Response = await client.get(url)
 
-        return Organizations(self._make_organization(data) for data in response.json())
+                if response.status_code != 200:
+                    return Organizations(orgs)
+
+                orgs.extend(self._make_organization(data) for data in response.json())
+
+                links = response.links
+                if 'next' in links and 'url' in links['next']:
+                    url = links['next']['url']
+                else:
+                    return Organizations(orgs)
 
     def _get_api_client(self) -> AsyncClient:
         return AsyncClient(
