@@ -1,15 +1,19 @@
 from fastapi import FastAPI
 
-from apps.api.rest.connected import urls as connected
-from modules.shared.kernel.infrastructure.starters import (
-    DotEnvStarter,
-    TortoiseStarter
-)
+from apps.api.rest.connected import endpoints as connected
+from modules.api.shared.infrastructure.containers import ApiContainer
+from modules.shared.kernel.infrastructure.starters import TortoiseStarter
 
-dotenv = DotEnvStarter()
-tortoise = TortoiseStarter()
+container = ApiContainer()
+container.wire(modules=[connected])
 
 app = FastAPI()
 app.include_router(connected.router)
-app.add_event_handler('startup', dotenv.start)
-app.add_event_handler('startup', tortoise.start)
+
+
+@app.on_event('startup')
+async def start_tortoise() -> None:
+    await TortoiseStarter(
+        container.kernel.config.database.url(),
+        container.tortoise_modules()
+    ).start()

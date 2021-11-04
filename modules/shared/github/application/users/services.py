@@ -3,16 +3,16 @@ from typing import Tuple
 
 from modules.shared.github.domain.users.entities import *
 from modules.shared.github.domain.users.exceptions import UserNotFound
+from modules.shared.github.domain.users.repositories import UserRepository
 from modules.shared.github.domain.users.values import *
-from modules.shared.github.infrastructure.users.repositories import *
 
 __all__ = ('UserFinder', 'ConnectionChecker')
 
 
 class UserFinder:
 
-    def __init__(self) -> None:
-        self.repository = ApiUserRepository()
+    def __init__(self, repository: UserRepository) -> None:
+        self.repository = repository
 
     async def find(self, login: UserLogin) -> User:
         user = await self.repository.find_by_login(login)
@@ -24,8 +24,8 @@ class UserFinder:
 
 class ConnectionChecker:
 
-    def __init__(self) -> None:
-        self.repository = ApiUserRepository()
+    def __init__(self, repository: UserRepository) -> None:
+        self.repository = repository
 
     async def check(self, user_1: User, user_2: User) -> Organizations:
         if user_1 == user_2:

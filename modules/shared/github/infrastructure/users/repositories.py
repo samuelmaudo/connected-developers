@@ -1,6 +1,6 @@
-import os
 from typing import Any, Dict, Optional
 
+import orjson
 from httpx import AsyncClient, Response
 
 from modules.shared.github.domain.users.entities import *
@@ -12,9 +12,9 @@ __all__ = ('ApiUserRepository',)
 
 class ApiUserRepository(UserRepository):
 
-    def __init__(self) -> None:
-        self.login: str = os.getenv('GITHUB_USERNAME')
-        self.personal_access_token: str = os.getenv('GITHUB_PERSONAL_ACCESS_TOKEN')
+    def __init__(self, login: str, personal_access_token: str) -> None:
+        self.login = login
+        self.personal_access_token = personal_access_token
 
     async def find_by_login(self, login: UserLogin) -> Optional[User]:
         async with self._get_api_client() as client:
@@ -23,12 +23,12 @@ class ApiUserRepository(UserRepository):
         if response.status_code != 200:
             return None
 
-        return self._make_user(response.json())
+        return self._make_user(orjson.loads(response.content))
 
     async def search_organizations_by_login(self, login: UserLogin) -> Organizations:
         async with self._get_api_client() as client:
             orgs = []
-            url = f'/users/{login}/orgs?per_page=100&page=1'
+            url = f'/users/{login}/orgs?page=1'
             while True:
 
                 response: Response = await client.get(url)
@@ -36,7 +36,8 @@ class ApiUserRepository(UserRepository):
                 if response.status_code != 200:
                     return Organizations(orgs)
 
-                orgs.extend(self._make_organization(data) for data in response.json())
+                content = orjson.loads(response.content)
+                orgs.extend(self._make_organization(data) for data in content)
 
                 links = response.links
                 if 'next' in links and 'url' in links['next']:

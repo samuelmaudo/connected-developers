@@ -1,6 +1,6 @@
-import os
 from typing import Any, Dict, Optional
 
+import orjson
 from httpx import AsyncClient, Response
 
 from modules.shared.twitter.domain.users.entities import *
@@ -12,8 +12,8 @@ __all__ = ('ApiUserRepository',)
 
 class ApiUserRepository(UserRepository):
 
-    def __init__(self) -> None:
-        self.bearer_token: str = os.getenv('TWITTER_BEARER_TOKEN')
+    def __init__(self, bearer_token: str) -> None:
+        self.bearer_token: str = bearer_token
 
     async def find_by_login(self, login: UserLogin) -> Optional[User]:
         async with self._get_api_client() as client:
@@ -22,7 +22,7 @@ class ApiUserRepository(UserRepository):
         if response.status_code != 200:
             return None
 
-        content = response.json()
+        content = orjson.loads(response.content)
         if 'errors' in content or 'data' not in content:
             return None
 
@@ -34,7 +34,7 @@ class ApiUserRepository(UserRepository):
             pagination_token = None
             while True:
 
-                params = {'max_results': 500}
+                params = {}
                 if pagination_token is not None:
                     params['pagination_token'] = pagination_token
 
@@ -45,7 +45,7 @@ class ApiUserRepository(UserRepository):
                 if response.status_code != 200:
                     return Users(users)
 
-                content = response.json()
+                content = orjson.loads(response.content)
                 if 'errors' in content or 'data' not in content:
                     return Users(users)
 

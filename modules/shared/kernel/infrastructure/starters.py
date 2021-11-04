@@ -1,21 +1,21 @@
-import os
+from typing import List
 
-import dotenv
 import orjson
 import tortoise
 
-__all__ = ('DotEnvStarter', 'TortoiseStarter')
-
-
-class DotEnvStarter:
-
-    async def start(self) -> None:
-        dotenv.load_dotenv()
+__all__ = ('TortoiseStarter')
 
 
 class TortoiseStarter:
 
-    def __init__(self, generate_schemas: bool = False) -> None:
+    def __init__(
+        self,
+        db_url: str,
+        model_modules: List[str],
+        generate_schemas: bool = False
+    ) -> None:
+        self.db_url = db_url
+        self.model_modules = model_modules
         self.generate_schemas = generate_schemas
 
     async def start(self) -> None:
@@ -29,9 +29,8 @@ class TortoiseStarter:
 
     async def _init_tortoise(self) -> None:
         await tortoise.Tortoise.init(
-            db_url=os.getenv('DATABASE_URL'),
-            modules={'models': ['modules.api.connected.infrastructure.repositories']}
-        )
+            db_url=self.db_url,
+            modules={'models': self.model_modules})
 
     async def _maybe_generate_schema(self) -> None:
         if self.generate_schemas:

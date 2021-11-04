@@ -8,7 +8,6 @@ from apps.api.rest.connected.responses import (
     RegisteredDevelopersResponse
 )
 from modules.api.connected.application.services import (
-    ConnectionCheckStorer,
     ConnectionChecker,
     ConnectionChecksSearcher
 )
@@ -18,9 +17,8 @@ from modules.api.connected.domain.values import CheckUser
 
 class CheckConnectionController:
 
-    def __init__(self) -> None:
-        self.connection_checker = ConnectionChecker()
-        self.connection_checks_storer = ConnectionCheckStorer()
+    def __init__(self, connection_checker: ConnectionChecker) -> None:
+        self.connection_checker = connection_checker
 
     async def handle(self, login_1: str, login_2: str) -> Response:
         user_1 = CheckUser(login_1)
@@ -38,8 +36,8 @@ class CheckConnectionController:
 
 class GetPreviousChecksController:
 
-    def __init__(self) -> None:
-        self.connection_checks_searcher = ConnectionChecksSearcher()
+    def __init__(self, connection_checks_searcher: ConnectionChecksSearcher) -> None:
+        self.connection_checks_searcher = connection_checks_searcher
 
     async def handle(self, login_1: str, login_2: str) -> Response:
         user_1 = CheckUser(login_1)
