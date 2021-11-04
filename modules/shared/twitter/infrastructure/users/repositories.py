@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import orjson
 from httpx import AsyncClient, Response
@@ -30,11 +30,11 @@ class ApiUserRepository(UserRepository):
 
     async def search_followed_users_by_id(self, id: UserId) -> Users:
         async with self._get_api_client() as client:
-            users = []
+            users: List[User] = []
             pagination_token = None
             while True:
 
-                params = {}
+                params: Dict[str, str] = {}
                 if pagination_token is not None:
                     params['pagination_token'] = pagination_token
 

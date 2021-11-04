@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import orjson
 from httpx import AsyncClient, Response
@@ -27,7 +27,7 @@ class ApiUserRepository(UserRepository):
 
     async def search_organizations_by_login(self, login: UserLogin) -> Organizations:
         async with self._get_api_client() as client:
-            orgs = []
+            orgs: List[Organization] = []
             url = f'/users/{login}/orgs?page=1'
             while True:
 
