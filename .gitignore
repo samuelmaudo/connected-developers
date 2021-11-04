@@ -6,3 +6,12 @@
 /e2e-test/cypress/videos
 
 /.idea
+.mypy_cache
+.coverage
+htmlcov
+
+__pycache__
+*.pyc
+*.pyo
+
+config.ini
