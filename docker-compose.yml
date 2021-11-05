@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+
+  web:
+    build: .
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn apps.api.rest.main:app --host 0.0.0.0'
+    volumes:
+      - ".:/project"
+    ports:
+      - "5000:8000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://connected_developers:python_challenge@db:5432/connected_developers
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    expose:
+      - 5001
+    environment:
+      - POSTGRES_USER=connected_developers
+      - POSTGRES_PASSWORD=python_challenge
+      - POSTGRES_DB=connected_developers
+
+volumes:
+  postgres_data:

@@ -3,7 +3,7 @@ from typing import List
 import orjson
 import tortoise
 
-__all__ = ('TortoiseStarter')
+__all__ = ('TortoiseStarter',)
 
 
 class TortoiseStarter:

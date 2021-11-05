@@ -15,5 +15,6 @@ app.include_router(connected.router)
 async def start_tortoise() -> None:
     await TortoiseStarter(
         container.kernel.config.database.url(),
-        container.tortoise_modules()
+        container.tortoise_modules(),
+        generate_schemas=True
     ).start()
