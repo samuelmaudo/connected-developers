@@ -1,3 +1,5 @@
+from typing import Dict, List, Tuple
+
 from tortoise import fields
 from tortoise.models import Model as Table
 
@@ -5,7 +7,7 @@ from modules.api.connected.domain.entities import ConnectionCheck, ConnectionChe
 from modules.api.connected.domain.repositories import ConnectionCheckRepository
 from modules.api.connected.domain.values import CheckUser
 
-__all__ = ('TortoiseConnectionCheckRepository',)
+__all__ = ('TortoiseConnectionCheckRepository', 'DummyConnectionCheckRepository')
 
 
 class TortoiseConnectionCheckRepository(ConnectionCheckRepository):
@@ -39,6 +41,7 @@ class TortoiseConnectionCheckRepository(ConnectionCheckRepository):
 
 
 class TortoiseConnectionCheckTable(Table):
+
     id = fields.UUIDField(pk=True)
     registered_at = fields.DatetimeField()
     user_1 = fields.CharField(max_length=255)
@@ -48,3 +51,22 @@ class TortoiseConnectionCheckTable(Table):
     class Meta:
         table = 'api_connection_check'
         indexes = (('user_1', 'user_2'),)
+
+
+class DummyConnectionCheckRepository(ConnectionCheckRepository):
+
+    _connection_checks: Dict[Tuple[str, ...], List[ConnectionCheck]] = {}
+
+    async def save(self, check: ConnectionCheck) -> None:
+        users = tuple(sorted(user.value for user in check.users))
+        if users not in self._connection_checks:
+            self._connection_checks[users] = []
+
+        self._connection_checks[users].append(check)
+
+    async def search_by_users(self, user_1: CheckUser, user_2: CheckUser) -> ConnectionChecks:
+        users = tuple(sorted([user_1.value, user_2.value]))
+        if users not in self._connection_checks:
+            return ConnectionChecks()
+
+        return ConnectionChecks(self._connection_checks[users])

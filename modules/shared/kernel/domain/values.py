@@ -57,9 +57,9 @@ class Str(Value):
 class Uuid(Str):
 
     @staticmethod
-    def check_uuid(hex: str) -> bool:
+    def check_uuid(val: str) -> bool:
         try:
-            UUID(hex)
+            UUID(val)
         except ValueError:
             return False
         else:
@@ -70,6 +70,6 @@ class Uuid(Str):
         return cls(str(uuid4()))
 
     @validator('value')
-    def validate_uuid(cls, hex: str) -> str:
-        assert cls.check_uuid(hex), f'{hex} is not a UUID'
-        return hex
+    def validate_uuid(cls, val: str) -> str:
+        assert cls.check_uuid(val), f'{val} is not a UUID'
+        return val

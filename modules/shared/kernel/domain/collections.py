@@ -10,11 +10,17 @@ T = TypeVar('T')
 
 @dataclass(init=False, repr=False, frozen=True)
 class Collection(Generic[T], ABC):
+
     items: Tuple[T, ...]
 
     def __init__(self, items: Iterable[T] = ()):
-        object.__setattr__(self, 'items', tuple(items))
-        # TODO: check if to call `self.__post_init__()` is necessary
+        items = tuple(items)
+        type_ = self.type()
+        for item in items:
+            if not isinstance(item, type_):
+                raise TypeError(f'{self.__class__.__name__} can only content instances of {type_.__name__}')
+
+        object.__setattr__(self, 'items', items)
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}{self.items!r}'

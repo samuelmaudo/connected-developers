@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import orjson
 from httpx import AsyncClient, Response
@@ -7,7 +7,7 @@ from modules.shared.github.domain.users.entities import *
 from modules.shared.github.domain.users.repositories import *
 from modules.shared.github.domain.users.values import *
 
-__all__ = ('ApiUserRepository',)
+__all__ = ('ApiUserRepository', 'DummyUserRepository')
 
 
 class ApiUserRepository(UserRepository):
@@ -55,3 +55,44 @@ class ApiUserRepository(UserRepository):
 
     def _make_user(self, data: Dict[str, Any]) -> User:
         return User.from_primitives(data['id'], data['login'])
+
+
+class DummyUserRepository(UserRepository):
+
+    _users: Dict[str, Tuple[int, str]] = {
+        'JaimeSastre': (385468548, 'JaimeSastre'),
+        'YoussefAriza': (854722154, 'YoussefAriza'),
+        'NayaraHidalgo': (288456873, 'NayaraHidalgo'),
+        'CandelaPazos': (541876158, 'CandelaPazos'),
+    }
+    _organizations: Dict[str, List[Tuple[int, str]]] = {
+        'JaimeSastre': [],
+        'YoussefAriza': [
+            (856687431, 'Norset'),
+            (498734878, 'Karmat')
+        ],
+        'NayaraHidalgo': [
+            (943485479, 'Alteboss')
+        ],
+        'CandelaPazos': [
+            (344589354, 'Casaderos'),
+            (846831544, 'Paratox'),
+            (856687431, 'Norset')
+        ],
+    }
+
+    async def find_by_login(self, login: UserLogin) -> Optional[User]:
+        if login.value not in self._users:
+            return None
+
+        return User.from_primitives(*self._users[login.value])
+
+    async def search_organizations_by_login(self, login: UserLogin) -> Organizations:
+        if login.value not in self._users:
+            return Organizations()
+
+        return Organizations(
+            Organization.from_primitives(*organization)
+            for organization
+            in self._organizations[login.value]
+        )
